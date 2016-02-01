@@ -25,7 +25,7 @@ cert_packages:
   {% set key_dir = data.get('key_dir', map.key_dir) %}
 
 
-{{ cert_dir }}/{{ name }}:
+{{ cert_dir }}/cert-{{ name }}.pem:
   file.managed:
   {% if data.has_key('cert') %}
     - contents_pillar: cert:certlist:{{ name }}:cert
@@ -37,7 +37,7 @@ cert_packages:
     - mode: {{ cert_mode }}  
 
   {% if data.has_key('key') %}
-{{ key_dir }}/{{ name }}.key:
+{{ key_dir }}/key-{{ name }}.pem:
   file.managed:
     - contents_pillar: cert:certlist:{{ name }}:key
     - user: {{ key_user }}  
