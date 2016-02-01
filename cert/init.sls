@@ -27,7 +27,7 @@ cert_packages:
 
 {{ cert_dir }}/{{ name }}:
   file.managed:
-  {% if pillar[cert:certlist:{{ name }}:cert] is defined %}
+  {% if data.has_key('cert') %}
     - contents_pillar: cert:certlist:{{ name }}:cert
   {% else %}
     - source: salt://cert/{{ name }}
@@ -36,7 +36,7 @@ cert_packages:
     - group: {{ cert_group }}  
     - mode: {{ cert_mode }}  
 
-  {% if pillar[cert:certlist:{{ name }}:key] is defined %}
+  {% if data.has_key('key') %}
 {{ key_dir }}/{{ name }}.key:
   file.managed:
     - contents_pillar: cert:certlist:{{ name }}:key
