@@ -15,7 +15,6 @@ cert_packages:
 
 {% for name, data in salt['pillar.get']('cert:certlist', {}).items() %}
 
-  {% set key = data.get('key', False) %}
   {% set cert_user = data.get('cert_user', map.cert_user) %}
   {% set key_user = data.get('key_user', map.key_user) %}
   {% set cert_group = data.get('cert_group', map.cert_group) %}
@@ -28,16 +27,19 @@ cert_packages:
 
 {{ cert_dir }}/{{ name }}:
   file.managed:
+  {% if pillar[cert:certlist:{{ name }}:cert] is defined %}
+    - contents_pillar: cert:certlist:{{ name }}:cert
+  {% else %}
     - source: salt://cert/{{ name }}
+  {% endif %}
     - user: {{ cert_user }}  
     - group: {{ cert_group }}  
     - mode: {{ cert_mode }}  
 
-  {% if key %}
+  {% if pillar[cert:certlist:{{ name }}:key] is defined %}
 {{ key_dir }}/{{ name }}.key:
   file.managed:
-    - contents: |
-{{ key|indent(8, True) }}
+    - contents_pillar: cert:certlist:{{ name }}:key
     - user: {{ key_user }}  
     - group: {{ key_group }}  
     - mode: {{ key_mode }}  
