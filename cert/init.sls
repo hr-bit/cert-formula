@@ -45,4 +45,12 @@ cert_packages:
     - mode: {{ key_mode }}  
   {% endif %}
 
+{% if grains['os_family']=="Debian" %}
+  cmd.run:
+    - name: update-ca-certificates
+    - runas: root
+    - onchanges:
+      - file: {{ cert_dir }}/{{ name }}
+{% endif %}
+
 {% endfor %}
