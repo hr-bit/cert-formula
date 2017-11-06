@@ -24,6 +24,10 @@ cert_packages:
   {% set cert_dir = data.get('cert_dir', map.cert_dir) %}
   {% set key_dir = data.get('key_dir', map.key_dir) %}
 
+group-{{ name }}-{{ cert_group }}:
+  group.present:
+    - name: {{ cert_group }}
+    - system: True
 
 {{ cert_dir }}/cert-{{ name }}.pem:
   file.managed:
@@ -35,14 +39,23 @@ cert_packages:
     - user: {{ cert_user }}  
     - group: {{ cert_group }}  
     - mode: {{ cert_mode }}  
+    - require:
+      - group: group-{{ name }}-{{ cert_group }}
 
   {% if data.has_key('key') %}
+group-{{ name }}-{{ key_group }}:
+  group.present:
+    - name: {{ key_group }}
+    - system: True
+
 {{ key_dir }}/key-{{ name }}.pem:
   file.managed:
     - contents_pillar: cert:certlist:{{ name }}:key
     - user: {{ key_user }}  
     - group: {{ key_group }}  
     - mode: {{ key_mode }}  
+    - require:
+      - group: group-{{ name }}-{{ key_group }}
   {% endif %}
 
 {% if grains['os_family']=="Debian" %}
