@@ -63,7 +63,7 @@ group-{{ name }}-{{ key_group }}:
     - name: update-ca-certificates
     - runas: root
     - onchanges:
-      - file: {{ cert_dir }}/{{ name }}
+      - file: {{ cert_dir }}/cert-{{ name }}.pem
 {% endif %}
 
 {% endfor %}
