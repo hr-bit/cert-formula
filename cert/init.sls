@@ -31,7 +31,7 @@ group-{{ name }}-{{ cert_group }}:
 
 {{ cert_dir }}/cert-{{ name }}.pem:
   file.managed:
-  {% if data.has_key('cert') %}
+  {% if 'cert' in data %}
     - contents_pillar: cert:certlist:{{ name }}:cert
   {% else %}
     - source: salt://cert/{{ name }}
@@ -42,7 +42,7 @@ group-{{ name }}-{{ cert_group }}:
     - require:
       - group: group-{{ name }}-{{ cert_group }}
 
-  {% if data.has_key('key') %}
+  {% if 'key' in data %}
 group-{{ name }}-{{ key_group }}:
   group.present:
     - name: {{ key_group }}
